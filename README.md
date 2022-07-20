@@ -202,12 +202,53 @@ giveEvent(input, 'click', ()=>{
 *In the example, notice how the `done_action()` function is called as we are changing the contents of the tab.*
 
 ## Saving Functionality
+*Note: Currently, files can only be downloaded to the device, a saving stream has not yet been implemented, nor has compatibility with any cloud APIs, however this is something that will be implemented in the future.*
+
+### Save Validation
+When tabs are attempted to be closed by the user, there is an option of having save validation (i.e. a dialog box appears requesting that the user save their progress on the file). This can be toggled on/off via the following functions. The *changesTo* functions should be used when the user first makes changes to the file after having saved it or loaded it into the app. The *TabSaved* functions should rarely/not be used as they are already implemented when the tab gets saved by this library.
+
+*Note: All parameters of tabid is the individual ID given to each tab. For more details, see [Create Tabs](#create-tabs).
+
+| function      | action |
+| ---            | ---            |
+| changesToActiveTab() | toggles save validation **on** for the active tab |
+| changesToTab(tabid) | toggles save validation **on** for the target tab |
+| activeTabSaved() | toggles save validation **off** for the active tab |
+| tabSaved(tabid) | toggles save validation **of** for the target tab |
+
 ### Creating a Save As Dialog
+A save as dialog can be created by calling the function `createSavingDialog(docCollection=appInfo.defaultDocumentCollection, tabid=getActiveTabId())`. The parameters are as follows.
+| createSavingDialog      |  |  |
+| ---            | ---            |
+| parameter | default value | use |
+| docCollection | appInfo.defaultDocumentCollection | defines the method that should be used to collect to data of the target tab |
+| tabid | getActiveTabId() | ID of the target tab that is to be saved |
 
-### Using Cloud APIs
-
+**Example**
+```
+createSavingDialog(canvasToPNG, getActiveTabId());
+```
 
 ## Default Shortcuts
+There are default shortcuts available to be used. Simply call `giveShortcuts()` to quickly get started with them. The default shortcuts are as follows.
+
+| Attribute      | Ctrl  | Shft  | Key  |
+| ---            | ---            | ---            | ---            |
+| undo | true | false | 'z' |
+| redo | true | true | 'z' |
+| redo | true | false | 'y' |
+| closeTab | true | false | 'q' |
+| newTab | true | false | 'b' |
+| save | true | false | 's' |
+
+`giveShortcuts()` also can take in one parameter - `giveShortcuts(args)` to override any specific actions. The format for the object is as follows.
+```
+args = {
+    attr1:[{ctrl:`true/false`, shft:`true/false`, key:`'letter'`}, ...],
+    ...
+}
+```
+*In words: Each of the five attributes (undo, redo, closeTab, newTab and save) has a array of shortcut objects that can be used to activate it. The shortcut object contains the parameters ctrl, shft and key.*
 
 
 ## App Information
