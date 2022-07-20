@@ -88,7 +88,7 @@ To dynamically create a tab using Javascript, use the `createTab(args)` function
 | docCollection | appInfo.defaultDocumentCollection | the method that will be used to collect the data when needed to be saved |
 | saved | true | whether the new tab will already be saved somewhere |
 
-| Syntax      | Description | Test Text     |
+| Attribute      | Value | Description     |
 | :---        |    :----:   |          ---: |
 | Header      | Title       | Here's this   |
 | Paragraph   | Text        | And more      |
