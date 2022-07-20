@@ -70,6 +70,10 @@ function giveEventId(object){
 function getActiveTab(){
     return document.querySelector("[data-type='tab-holder']").querySelector('.active');
 }
+function getActiveTabName(){
+    const text = getActiveTab().innerText;
+    return text.substring(0, text.length  - 1);
+}
 function getActiveTabSection(){
     return getTabSection(getActiveTab().getAttribute('tab-id'));
 }
@@ -93,6 +97,20 @@ function changesToTab(tabid){
     getTab(tabid).setAttribute('status', 'unsaved-changes');
 }
 
+function download(filename, filetype, data) {
+    const blob = new Blob([data], {type: 'txt'});
+    if(window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveBlob(blob, filename);
+    }
+    else{
+        const elem = window.document.createElement('a');
+        elem.href = window.URL.createObjectURL(blob);
+        elem.download = filename + "." + filetype;        
+        document.body.appendChild(elem);
+        elem.click();        
+        document.body.removeChild(elem);
+    }
+}
 
 function removeDlg(){
     document.querySelector('.modal-dlg').remove();
@@ -149,8 +167,8 @@ function createSaveValidationDialog(){
         
     });
 }
-function createSavingDialog(){
-    return new Promise((resolve)=>{
+function createSavingDialog(docCollection){
+    return new Promise(()=>{
 
         const modal = document.createElement('div');
         modal.classList.add('modal-dlg');
@@ -166,7 +184,21 @@ function createSavingDialog(){
         main.classList.add('dlg-main');
         main.innerHTML = "<h1>Where do you want to save your file to?</h1>";
 
+        const saves = document.createElement('div');
+        saves.classList.add('saves');
         
+        main.appendChild(saves);
+        
+        const device = document.createElement('div');
+        device.classList.add('save-btn');
+        device.innerHTML = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' height='45'><path d='M528 0h-480C21.5 0 0 21.5 0 48v320C0 394.5 21.5 416 48 416h192L224 464H152C138.8 464 128 474.8 128 488S138.8 512 152 512h272c13.25 0 24-10.75 24-24s-10.75-24-24-24H352L336 416h192c26.5 0 48-21.5 48-48v-320C576 21.5 554.5 0 528 0zM512 288H64V64h448V288z'/></svg><br>Device";
+
+        device.onclick = ()=>{
+            download(getActiveTabName(), appInfo.defaultFileType, docCollection());
+            removeDlg();
+        }
+
+        saves.appendChild(device);
 
         const buttons = document.createElement('div');
         buttons.classList.add('dlg-buttons');
@@ -188,7 +220,7 @@ function createSavingDialog(){
 }
 
 // Give each tab the necassery events
-function giveTabEvents(tab, getDoc){
+function giveTabEvents(tab, docCollection){
     $(tab).on('activate', function(){
 
         const activeTab = getActiveTab();
@@ -236,7 +268,7 @@ function giveTabEvents(tab, getDoc){
             // Display unsaved changes box
             createSaveValidationDialog().then((promise)=>{
                 if(promise == "Save"){
-                    createSavingDialog().then((promise)=>{
+                    createSavingDialog(docCollection).then((promise)=>{
                         console.log(promise);
                     });
                 }
@@ -261,7 +293,7 @@ function createTab(args){
         activate:true,
         content:appInfo.defaultTabContent, 
         name:'untitled_doc',
-        document:appInfo.defaultDocumentCollection,
+        docCollection:appInfo.defaultDocumentCollection,
         saved:true
     };
     args = Object.assign({},defaultArgs, args);
@@ -284,7 +316,7 @@ function createTab(args){
     T_ARR.push({id:tab.getAttribute('tab-id'), stateIndex:0, states:[$(tabContent).clone(true, true)]});
 
     // Give events
-    giveTabEvents(tab, args.document);
+    giveTabEvents(tab, args.docCollection);
 
     if(args.activate){
         // Active this tab

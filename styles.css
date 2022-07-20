@@ -133,6 +133,24 @@ html, body{
 .modal-dlg .dlg .dlg-main p{
     margin-top:0;
 }
+.modal-dlg .dlg .dlg-main .saves{
+    text-align: center;
+}
+.modal-dlg .dlg .dlg-main .saves .save-btn{
+    margin:15px;
+    display: inline-block;
+    user-select: none;
+    cursor: pointer;
+    padding:5px;
+    padding-left:10px;
+    padding-right:10px;
+    border-radius: 5px;
+    border:1px solid rgb(27, 27, 29);
+    background-color: #616168;
+}
+.modal-dlg .dlg .dlg-main .saves .save-btn:hover{
+    background-color: #6b6b70;
+}
 .modal-dlg .dlg .dlg-buttons{
     font-size: 20px;
     padding:12px;
