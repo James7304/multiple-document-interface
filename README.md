@@ -38,6 +38,9 @@ To create the interface, add the following code to the your `<body>` tag. This w
 
 
 ## Creating tabs
+
+All tabs are given a unique id called `tab-id` this is stored as an attribute on each tab.
+
 ### Creating tabs on window load
 To initially create tabs in your .html file, add  an `<li>` tag into the `<ul data-type="tab-holder"></ul>` tag for each tab you want.
 ```
@@ -77,16 +80,18 @@ By default, the first tab will be set as the active tab (tab that is currently o
 
 
 ### Dynamically creating tabs
-To dynamically create a tab using Javascript, use the `createTab(args)` function.
+To dynamically create a tab using Javascript, use the `createTab(args)` function. `createTab()` returns the `tab-id` of the tab that it just created.
 `createTab(args)` has the following default parameter attributes.
 
 | Attribute      | Value | Description     |
-| ---            | ---                  | ---                                                                                                    |
+| ---            | ---            | ---            |
 | activate | true | if true, the new tab will be made the active tab |
 | content | appInfo.defaultTabContent | the contents of the new tab section, this can be DOM elements or plain text |
 | name | 'untitled_doc' | the name given to the tab |
 | docCollection | appInfo.defaultDocumentCollection | the method that will be used to collect the data when needed to be saved |
 | saved | true | whether the new tab will already be saved somewhere |
+
+
 
 **Example**
 ```
@@ -149,10 +154,26 @@ div.custom-sections[data-type="tab-content"] .tab-section{
 ```
 
 ## Getting and Setting Tab Content
+One of the most important things you will need to be able to do is getting and setting content in each tab section. The following functions should help with this.
+*Note: All parameters of tabid is the individual ID given to each tab. For more details, see [Create Tabs](#create-tabs).
+
+| function      | returns |
+| ---            | ---            |
+| getActiveTabId() | the `tab-id` of the active tab |
+| getActiveTab() | the `<li>` tag of the active tab |
+| getActiveTabName() | the document name of the active tab |
+| getActiveTabSection() | the `<div>` tag that contains the content of the active tab |
+| getActiveTabContent() | the content of the active tab |
+|||
+| getTab(tabid) | the `<li>` tag of the target tab |
+| getTabName(tabid) | the document name of the target tab |
+| getTabSection(tabid) | the `<div>` tag that contains the content of the target tab |
+| getTabContent(tabid) | the content of the target tab |
+
 
 ## Undo and Redo Functions
 ### Undo and Redo
-To undo an action, simply call `undo_action()`. Similiary, to redo an action, call `redo_action()`. These are usually implented when the user clicks an undo/redo button or uses a shortcut like Ctrl + Z/Ctrl + Shft + Z. These default shortcuts can be activated using the `giveShortcuts()` function. For more details, see [Default Shortcuts](#Default Shortcuts).
+To undo an action, simply call `undo_action()`. Similiary, to redo an action, call `redo_action()`. These are usually implented when the user clicks an undo/redo button or uses a shortcut like Ctrl + Z/Ctrl + Shft + Z. These default shortcuts can be activated using the `giveShortcuts()` function. For more details, see [Default Shortcuts](#default-shortcuts).
 
 ### Actions
 When undoing or redoing, an action is undone/redone. To define when an action has occured, call `done_action()`. This will effectivley take a screen shot of the active tab, so that it can be referred back to later in the document.
