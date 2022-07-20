@@ -179,21 +179,21 @@ function createSaveValidationDialog(){
         cancelBtn.innerText = "Cancel";
         cancelBtn.onclick = ()=>{
             removeDlg();
-        }
+        };
 
         const dontBtn = document.createElement('button');
         dontBtn.innerText = "Don't Save";
         dontBtn.onclick = ()=>{
             removeDlg();
             resolve("Don't Save");
-        }
+        };
 
         const saveBtn = document.createElement('button');
         saveBtn.innerText = "Save";
         saveBtn.onclick = ()=>{
             removeDlg();
             resolve("Save");
-        }
+        };
 
         buttons.appendChild(cancelBtn);
         buttons.appendChild(dontBtn);
@@ -208,7 +208,7 @@ function createSaveValidationDialog(){
     });
 }
 // This dialog box handles the saving of the document
-function createSavingDialog(docCollection){
+function createSavingDialog(docCollection=appInfo.defaultDocumentCollection, tabid=getActiveTabId()){
     return new Promise((resolve)=>{
 
         const modal = document.createElement('div');
@@ -235,10 +235,10 @@ function createSavingDialog(docCollection){
         device.innerHTML = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' height='45'><path d='M528 0h-480C21.5 0 0 21.5 0 48v320C0 394.5 21.5 416 48 416h192L224 464H152C138.8 464 128 474.8 128 488S138.8 512 152 512h272c13.25 0 24-10.75 24-24s-10.75-24-24-24H352L336 416h192c26.5 0 48-21.5 48-48v-320C576 21.5 554.5 0 528 0zM512 288H64V64h448V288z'/></svg><br>Device";
 
         device.onclick = ()=>{
-            download(getActiveTabName(), appInfo.defaultFileType, docCollection());
+            download(getTabName(tabid), appInfo.defaultFileType, docCollection());
             removeDlg();
             resolve('Saved');
-        }
+        };
 
         saves.appendChild(device);
 
@@ -249,7 +249,7 @@ function createSavingDialog(docCollection){
         cancelBtn.innerText = "Cancel";
         cancelBtn.onclick = ()=>{
             removeDlg();
-        }
+        };
         
         buttons.appendChild(cancelBtn);
 
@@ -312,7 +312,7 @@ function giveTabEvents(tab, docCollection){
             // Display unsaved changes box
             createSaveValidationDialog().then((promise)=>{
                 if(promise == "Save"){
-                    createSavingDialog(docCollection).then((promise)=>{
+                    createSavingDialog(docCollection, tab.getAttribute('tab-id')).then((promise)=>{
                         if(promise == "Saved"){
                             closeThis();
                         }
@@ -468,7 +468,7 @@ function redo_action(){
 
 ///// Event handling /////
 // The user must call this function to give an event to an object that must keep the event when undoing and redoing actions
-function giveEvent(el, eventType, foo){
+function giveEvent(el, eventType, handler){
 
     let end = false;
     let parent = el;
@@ -486,7 +486,7 @@ function giveEvent(el, eventType, foo){
         giveEventId(el);
     }
 
-    $(parent).on(eventType, "[event-id='" + el.getAttribute('event-id') + "']", foo);
+    $(parent).on(eventType, "[event-id='" + el.getAttribute('event-id') + "']", handler);
 }
 
 
@@ -499,7 +499,8 @@ function giveShortcuts(args){
         undo:[{ctrl:true, shft:false, key:'z'}],
         redo:[{ctrl:true, shft:true, key:'z'}, {ctrl:true, shft:false, key:'y'}],
         closeTab:[{ctrl:true, shft:false, key:'q'}],
-        newTab:[{ctrl:true, shft:false, key:'b'}]
+        newTab:[{ctrl:true, shft:false, key:'b'}],
+        save:[{ctrl:true, shft:false, key:'s'}],
     };
     args = Object.assign({},defaultArgs, args);
 
@@ -530,6 +531,13 @@ function giveShortcuts(args){
             if(event.ctrlKey == args.newTab[i].ctrl && event.shiftKey == args.newTab[i].shft && event.key.toLowerCase() == args.newTab[i].key){
                 event.preventDefault();
                 createTab({saved:false});
+                return;
+            }
+        }
+        for(var i = 0; i < args.save.length; i++){
+            if(event.ctrlKey == args.save[i].ctrl && event.shiftKey == args.save[i].shft && event.key.toLowerCase() == args.save[i].key){
+                event.preventDefault();
+                createSavingDialog(appInfo.defaultDocumentCollection);
                 return;
             }
         }

@@ -14,6 +14,10 @@ Add `mdi.js` at the end of the `<body>` tag.
 ```
 <script src="./mdi.js" type="text/javascript"></script>
 ```
+Or use the compressed version `mdi.min.js`.
+```
+<script src="./mdi.min.js" type="text/javascript"></script>
+```
 
 ### Other requirements
 This project requires jQuery to run. Add the CDN into your `<head>` tag.
@@ -192,7 +196,7 @@ createTab({content:input, name:'My Second Tab'});
 var put = 1;
 giveEvent(input, 'click', ()=>{
     const h1 = document.createElement('h1');
-    h1.innerText = put;
+    h1.innerText = put + ". This can be undone and redone, try it out (Ctrl + Z/Ctrl + Y)";
     put++;
     getActiveTabSection().appendChild(h1);
 
