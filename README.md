@@ -155,7 +155,7 @@ div.custom-sections[data-type="tab-content"] .tab-section{
 
 ## Getting and Setting Tab Content
 One of the most important things you will need to be able to do is getting and setting content in each tab section. The following functions should help with this.
-*Note: All parameters of tabid is the individual ID given to each tab. For more details, see [Create Tabs](#create-tabs).
+*Note: All parameters of tabid is the individual ID given to each tab. For more details, see [Create Tabs]([#create-tabs](https://github.com/James7304/multiple-document-interface/edit/main/README.md#creating-tabs).*
 
 | function      | returns |
 | ---            | ---            |
@@ -173,7 +173,7 @@ One of the most important things you will need to be able to do is getting and s
 
 ## Undo and Redo Functions
 ### Undo and Redo
-To undo an action, simply call `undo_action()`. Similiary, to redo an action, call `redo_action()`. These are usually implented when the user clicks an undo/redo button or uses a shortcut like Ctrl + Z/Ctrl + Shft + Z. These default shortcuts can be activated using the `giveShortcuts()` function. For more details, see [Default Shortcuts](#default-shortcuts).
+To undo an action, simply call `undo_action()`. Similiary, to redo an action, call `redo_action()`. These are usually implented when the user clicks an undo/redo button or uses a shortcut like Ctrl + Z/Ctrl + Shft + Z. These default shortcuts can be activated using the `giveShortcuts()` function. For more details, see [Default Shortcuts]([#default-shortcuts](https://github.com/James7304/multiple-document-interface/edit/main/README.md#default-shortcuts).
 
 ### Actions
 When undoing or redoing, an action is undone/redone. To define when an action has occured, call `done_action()`. This will effectivley take a screen shot of the active tab, so that it can be referred back to later in the document.
@@ -207,7 +207,7 @@ giveEvent(input, 'click', ()=>{
 ### Save Validation
 When tabs are attempted to be closed by the user, there is an option of having save validation (i.e. a dialog box appears requesting that the user save their progress on the file). This can be toggled on/off via the following functions. The *changesTo* functions should be used when the user first makes changes to the file after having saved it or loaded it into the app. The *TabSaved* functions should rarely/not be used as they are already implemented when the tab gets saved by this library.
 
-*Note: All parameters of tabid is the individual ID given to each tab. For more details, see [Create Tabs](#create-tabs).
+*Note: All parameters of tabid is the individual ID given to each tab. For more details, see [Create Tabs]([#create-tabs](https://github.com/James7304/multiple-document-interface/edit/main/README.md#creating-tabs).
 
 | function      | action |
 | ---            | ---            |
@@ -219,7 +219,7 @@ When tabs are attempted to be closed by the user, there is an option of having s
 ### Creating a Save As Dialog
 A save as dialog can be created by calling the function `createSavingDialog(docCollection=appInfo.defaultDocumentCollection, tabid=getActiveTabId())`. The parameters are as follows.
 | createSavingDialog      |  |  |
-| ---            | ---            |
+| ---            | ---            | ---            |
 | parameter | default value | use |
 | docCollection | appInfo.defaultDocumentCollection | defines the method that should be used to collect to data of the target tab |
 | tabid | getActiveTabId() | ID of the target tab that is to be saved |
