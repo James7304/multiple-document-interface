@@ -6,6 +6,8 @@ input.setAttribute('style', 'margin:10px;');
 createTab({name:'My First Tab'});
 createTab({content:input,name:'My Second Tab'});
 createTab({name:'My Third Tab'});
+createTab({name:'My Third Tab'});
+createTab({name:'My Third Tab'});
 
 var put = 1;
 giveEvent(input, 'click', ()=>{

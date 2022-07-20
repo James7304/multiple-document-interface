@@ -15,11 +15,28 @@ html, body{
     height:30px;
     flex: 0 1 auto;
 
-    line-height: 30px;;
-    min-width:max-content;
+    line-height: 30px;
 
     background-color: rgb(53, 56, 61);
 
+    overflow-x: auto;
+    overflow-y: hidden;
+
+} 
+.tabs div.tab-bar::-webkit-scrollbar{
+    height:1px;
+}
+.tabs div.tab-bar::-webkit-scrollbar:hover{
+    height:2px;
+}
+.tabs div.tab-bar::-webkit-scrollbar-thumb {
+    background:rgb(124, 75, 28);
+}
+.tabs div.tab-bar::-webkit-scrollbar-thumb:hover {
+    background:rgb(166, 104, 46);
+}
+.tabs div.tab-bar::-webkit-scrollbar-track{
+    background: transparent;
 }
 .tabs div.tab-bar ul{
     
@@ -27,6 +44,7 @@ html, body{
     margin-top:0;
     margin-bottom:0;
     height:100%;
+    width:max-content;
 
     padding-left:0;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

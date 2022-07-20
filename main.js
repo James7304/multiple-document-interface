@@ -1,5 +1,5 @@
 
-// Tab array
+///// Tab array /////
 var T_ARR = [];
 
 // This function finds the active tab and puts it on the end of the array
@@ -46,6 +46,8 @@ function condenseT_ARR(){
     }
 }
 
+
+///// ID handling /////
 // This function gives object passed into it a unique tab-id
 var tabNo=1;
 function setNewTabID(object){
@@ -70,7 +72,11 @@ function giveEventId(object){
 
 // Returns the active tab id
 function getActiveTabId(){
-    return getActiveTab().getAttribute('tab-id');
+    const active = document.querySelector("[data-type='tab-holder']").querySelector('.active');
+    if(!active){
+        return;
+    }
+    return active.getAttribute('tab-id');
 }
 
 // Returns the HTML of the active tab
@@ -120,7 +126,7 @@ function changesToTab(tabid){
     getTab(tabid).setAttribute('status', 'unsaved-changes');
 }
 // Saves that the active tab has been saved
-function changesToActiveTab(){
+function activeTabSaved(){
     getActiveTab().removeAttribute('status');
 }
 // Saves that the target tab has been saved
@@ -254,6 +260,7 @@ function createSavingDialog(docCollection){
         document.body.appendChild(modal);
     });
 }
+
 
 ///// Tab construction - dynamically and statically /////
 // Give each tab the necassery events
@@ -426,6 +433,7 @@ function constructInitialTabs(){
     }
 }
 
+
 ///// Undo and redo functions /////
 // Call this function whenever an action has been done, so that it can be undone by the user
 function doneAction(unsavedChanges = true){
@@ -457,6 +465,7 @@ function redo_action(){
     }
 }
 
+
 ///// Event handling /////
 // The user must call this function to give an event to an object that must keep the event when undoing and redoing actions
 function giveEvent(el, eventType, foo){
@@ -479,6 +488,7 @@ function giveEvent(el, eventType, foo){
 
     $(parent).on(eventType, "[event-id='" + el.getAttribute('event-id') + "']", foo);
 }
+
 
 ///// Shortcuts /////
 // The user can call this function to initiate shortcuts for the functions available. There are default ones, or the user can create their own or remove them
@@ -525,6 +535,7 @@ function giveShortcuts(args){
         }
     });
 }
+
 
 ///// App information /////
 // Stores all the information about the app
