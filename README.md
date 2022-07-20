@@ -57,7 +57,7 @@ To initially create tabs in your .html file, add  an `<li>` tag into the `<ul da
 </div>
 ```
 
-By default, the first tab will be set as the active tab (tab that is currently open), however, you can override this by including `active`in the classlist of the tab you want to be the active tab.
+By default, the first tab will be set as the active tab (tab that is currently open), however, you can override this by including `active` in the classlist of the tab you want to be the active tab.
 ```
 <div class="tabs" data-type="tabs">
     <div data-type="tab-bar">
@@ -152,7 +152,7 @@ div.custom-sections[data-type="tab-content"] .tab-section{
 
 ## Undo and Redo Functions
 ### Undo and Redo
-To undo an action, simply call `undo_action()`. Similiary, to redo an action, call `redo_action()`. These are usually implented when the user click a undo/redo button or uses a shortcut like Ctrl + Z/Ctrl + Shft + Z. These default shortcuts can be activated using the `giveShortcuts()` function. For more details, see below.
+To undo an action, simply call `undo_action()`. Similiary, to redo an action, call `redo_action()`. These are usually implented when the user clicks an undo/redo button or uses a shortcut like Ctrl + Z/Ctrl + Shft + Z. These default shortcuts can be activated using the `giveShortcuts()` function. For more details, see [Default Shortcuts](#Default Shortcuts).
 
 ### Actions
 When undoing or redoing, an action is undone/redone. To define when an action has occured, call `done_action()`. This will effectivley take a screen shot of the active tab, so that it can be referred back to later in the document.
