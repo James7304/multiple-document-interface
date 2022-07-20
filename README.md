@@ -80,17 +80,8 @@ By default, the first tab will be set as the active tab (tab that is currently o
 To dynamically create a tab using Javascript, use the `createTab(args)` function.
 `createTab(args)` has the following default parameter attributes.
 
-| Attribute | Value | Description |
-| ----------- | ----------- |
-| activate | true | if true, the new tab will be made the active tab |
-| content | appInfo.defaultTabContent | the contents of the new tab section |
-| name | 'untitled_doc' | the name given to the tab |
-| docCollection | appInfo.defaultDocumentCollection | the method that will be used to collect the data when needed to be saved |
-| saved | true | whether the new tab will already be saved somewhere |
-
 | Attribute      | Value | Description     |
 | :---        |    :----:   |          ---: |
-| Header      | Title       | Here's this   |
 | activate | true | if true, the new tab will be made the active tab |
 | content | appInfo.defaultTabContent | the contents of the new tab section |
 | name | 'untitled_doc' | the name given to the tab |
