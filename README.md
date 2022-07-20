@@ -81,7 +81,7 @@ To dynamically create a tab using Javascript, use the `createTab(args)` function
 `createTab(args)` has the following default parameters.
 
 ```
-args = {
+{
     activate:true,
     content:appInfo.defaultTabContent,
     name:'untitled_doc',
