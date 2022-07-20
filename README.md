@@ -1,6 +1,9 @@
 ﻿# Multiple Document Interface
 This project is an interface for a MDI (Multiple Document Interface) app. It includes features such as a tabbed UI, the ability to dynamically add tabs and change tab content, the ability to save documents, saving validation, and undo and redo functions.
 
+## Demo
+[View a demo here](http://jamesmccorkindale.co.uk/demos/mdi)
+
 ## Usage
 ### Source
 Download the source code from GitHub and put it into your site.
