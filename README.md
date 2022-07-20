@@ -81,7 +81,7 @@ To dynamically create a tab using Javascript, use the `createTab(args)` function
 `createTab(args)` has the following default parameter attributes.
 
 | Attribute      | Value | Description     |
-| :---        |    :----:   |          ---: |
+| ---        |    ---   |     --- |
 | activate | true | if true, the new tab will be made the active tab |
 | content | appInfo.defaultTabContent | the contents of the new tab section |
 | name | 'untitled_doc' | the name given to the tab |
