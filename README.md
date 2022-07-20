@@ -211,13 +211,22 @@ giveEvent(input, 'click', ()=>{
 
 
 ## App Information
+The global variable `appInfo` contains information about the app that can be accessed anywhere. It is an object and the default values are as follows.
 
+| Attribute      | Value | Description     |
+| ---            | ---            | ---            |
+| dialogTitle | "Click to continue" | the title given on dialog boxes |
+| defaultTabContent | "" | the default content given to tabs when created dynamically using `createTab()` |
+| defaultDocumentCollection | ()=>{return getActiveTabSection().innerHTML;} | the default function used for collecting the data in the tab when saving the file |
+| defaultFileType | "html" | the default function file extension used when saving the file |
 
-## Unique IDs
+To change any of these values, use the function `giveAppInfo(args)` and as a parameter pass an object containing any of the attributes above, these attributes will then be changed in `appInfo`.
 
-
-
-
-
-
-
+**Example**
+```
+giveAppInfo({
+    dialogTitle:'vectorex.net',
+    defaultDocumentCollection:fileToXML(),
+    defaultFileType:'xml'
+});
+```
