@@ -39,13 +39,16 @@ To create the interface, add the following code to the your `<body>` tag. This w
 
 ## Creating tabs
 ### Creating tabs on window load
-To initially create tabs in your .html file, add the following.
+To initially create tabs in your .html file, add  an `<li>` tag into the `<ul data-type="tab-holder"></ul>` tag for each tab you want.
 ```
 <div class="tabs" data-type="tabs">
     <div data-type="tab-bar">
         <ul data-type="tab-holder">
-            ==<li>My First Tab</li>
-            <li>My Second Tab</li>==
+        
+            <li>My First Tab</li>
+            <li>My Second Tab</li>
+            <li>My Third Tab</li>
+            
         </ul>
     </div>
     <div data-type="tab-content">
@@ -54,7 +57,38 @@ To initially create tabs in your .html file, add the following.
 </div>
 ```
 
+By default, the first tab will be set as the active tab (tab that is currently open), however, you can override this by setting the class of the tab you want to be the active tab as `active`
+```
+<div class="tabs" data-type="tabs">
+    <div data-type="tab-bar">
+        <ul data-type="tab-holder">
+        
+            <li>My First Tab</li>
+            <li class="active">My Second Tab</li>
+            <li>My Third Tab</li>
+            
+        </ul>
+    </div>
+    <div data-type="tab-content">
+
+    </div>
+</div>
+```
+
+
 ### Dynamically creating tabs
+To dynamically create a tab using Javascript, use the `createTab(args)` function.
+`createTab(args)` has the following default parameters.
+
+```
+args = {
+    activate:true,
+    content:appInfo.defaultTabContent,
+    name:'untitled_doc',
+    docCollection:appInfo.defaultDocumentCollection,
+    saved:true
+}
+```
 
 
 ## Style Customisation
