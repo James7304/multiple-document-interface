@@ -5,14 +5,14 @@ This project is an interface for a MDI (Multiple Document Interface) app. It inc
 ### Source
 Download the source code from GitHub and put it into your site.
 
-Add `mdi-styles.css` into the `<head>` tag.
+Add `mdi.css` into the `<head>` tag.
 ```
-<link href="./mdi-styles.css" rel="stylesheet">
+<link href="./mdi.css" rel="stylesheet">
 ```
 
-Add `mdi-main.js` at the end of the `<body>` tag.
+Add `mdi.js` at the end of the `<body>` tag.
 ```
-<script src="./mdi-main.js" type="text/javascript"></script>
+<script src="./mdi.js" type="text/javascript"></script>
 ```
 
 ### Other requirements
