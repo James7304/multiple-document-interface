@@ -88,7 +88,7 @@ To dynamically create a tab using Javascript, use the `createTab(args)` function
 | docCollection | appInfo.defaultDocumentCollection | the method that will be used to collect the data when needed to be saved |
 | saved | true | whether the new tab will already be saved somewhere |
 
-** Example **
+**Example**
 ```
 const input = document.createElement('button');
 input.innerText = "Click this button for fun";
@@ -148,23 +148,42 @@ div.custom-sections[data-type="tab-content"] .tab-section{
 }
 ```
 
-## Undo and Redo Functions
-### Undo
+## Getting and Setting Tab Content
 
-### Redo
+## Undo and Redo Functions
+### Undo and Redo
+To undo an action, simply call `undo_action()`. Similiary, to redo an action, call `redo_action()`. These are usually implented when the user click a undo/redo button or uses a shortcut like Ctrl + Z/Ctrl + Shft + Z. These default shortcuts can be activated using the `giveShortcuts()` function. For more details, see below.
 
 ### Actions
+When undoing or redoing, an action is undone/redone. To define when an action has occured, call `done_action()`. This will effectivley take a screen shot of the active tab, so that it can be referred back to later in the document.
 
 ### Events
+When the undoing or redoing functions are used, any events added to elements in the tabs must be added using the function `giveEvent(el, eventType, handler)`, otherwise these elements may lose their events assigned to them. When using the `giveEvent()` function, ensure that the element that is having the event given to it, is already in a tab, otherwise an error warning will occur.
 
+**Example**
+```
+const input = document.createElement('button');
+input.innerText = "Add Text";
+input.setAttribute('style', 'margin:10px;');
+
+createTab({content:input, name:'My Second Tab'});
+
+var put = 1;
+giveEvent(input, 'click', ()=>{
+    const h1 = document.createElement('h1');
+    h1.innerText = put;
+    put++;
+    getActiveTabSection().appendChild(h1);
+
+    doneAction();
+});
+```
+*In the example, notice how the `done_action()` function is called as we are changing the contents of the tab.*
 
 ## Saving Functionality
 ### Creating a Save As Dialog
 
 ### Using Cloud APIs
-
-
-## Getting and Setting Tab Content
 
 
 ## Default Shortcuts
