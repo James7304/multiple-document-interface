@@ -14,7 +14,6 @@ html, body{
 .tabs div.tab-bar{
     height:30px;
     flex: 0 1 auto;
-    z-index:9;
 
     line-height: 30px;;
     min-width:max-content;
@@ -40,6 +39,7 @@ html, body{
     margin-right:1px;
 
     position:relative;
+    top:-2px;
 
     background-color: #4b4c50;
     height:100%;
@@ -50,6 +50,14 @@ html, body{
 
     color:rgb(230, 230, 230);
     font-size: 12px;
+}
+.tabs div.tab-bar ul li.active{
+    background-color: #282a2c;
+    margin-right:0;
+    left:-1px;
+}
+.tabs div.tab-bar ul li[status='unsaved-changes']{
+    font-style: italic;
 }
 .tabs div.tab-bar ul li div{
     display:inline-block;
@@ -64,12 +72,6 @@ html, body{
     display:inline-block;
     opacity: 1;
 }
-.tabs div.tab-bar ul li.active{
-    border-bottom: 1px solid #282a2c;
-    background-color: #282a2c;
-    margin-right:0;
-    left:-1px;
-}
 
 .tabs div.content{
     flex: 1 1 auto;
@@ -79,4 +81,79 @@ html, body{
 
 .tabs div.content .tab-section{
     height:100%;
+}
+
+.modal-dlg{
+    position: absolute;
+    top:0px;
+    left:0px;
+    height:100vh;
+    width:100vw;
+
+    background-color: #4c5762;
+    opacity: 0.5;
+}
+
+.modal-dlg .dlg{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    min-width:300px;
+
+    opacity: 1;
+
+    background-color: #4b4c50;
+    color:rgb(239, 241, 255);
+    border-radius: 12px;
+    padding-bottom: 12px;
+
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.modal-dlg .dlg .dlg-header{
+    padding:12px;
+    padding-top:5px;
+    padding-bottom:5px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    background-color: #282a2c;
+
+    border-bottom: 1px solid rgb(27, 27, 29);
+}
+
+.modal-dlg .dlg .dlg-main{
+    padding:12px;
+    padding-right:20px;
+}
+.modal-dlg .dlg .dlg-main h1{
+    font-size: 20px;
+    margin-bottom:16px;
+}
+.modal-dlg .dlg .dlg-main p{
+    margin-top:0;
+}
+.modal-dlg .dlg .dlg-buttons{
+    font-size: 20px;
+    padding:12px;
+}
+.modal-dlg .dlg .dlg-buttons button{
+    float: right;
+    margin-left:5px;
+    background-color: rgb(53, 56, 61);
+    border:1px solid rgb(27, 27, 29);
+    color:rgb(239, 241, 255);
+
+    border-radius: 5px;
+    padding:4px;
+    padding-left:14px;
+    padding-right:14px;
+    cursor: pointer;
+}
+
+.modal-dlg .dlg .dlg-buttons button:hover{
+    background-color: rgb(91, 95, 101);
+}
+.modal-dlg .dlg .dlg-buttons button:active{
+    background-color: rgb(106, 110, 118);
 }

@@ -54,6 +54,17 @@ function setNewTabID(object){
     tabNo++;
     return;
 }
+// Give unique event id
+function giveEventId(object){
+    
+    let id = Math.floor(Math.random() * 1000000) + 1000000;
+
+    while(document.querySelector("[event-id='" + id + "']")){
+        id = Math.floor(Math.random() * 1000000) + 1000000;
+    }
+
+    object.setAttribute('event-id', id);
+}
 
 // Returns the HTML of the active tag
 function getActiveTab(){
@@ -74,8 +85,110 @@ function getTabContent(tabid){
     return document.querySelector("[content-id='" + tabid + "']").innerHTML;
 }
 
+// Saving stuff
+function changesToActiveTab(){
+    getActiveTab().setAttribute('status', 'unsaved-changes');
+}
+function changesToTab(tabid){
+    getTab(tabid).setAttribute('status', 'unsaved-changes');
+}
+
+
+function removeDlg(){
+    document.querySelector('.modal-dlg').remove();
+}
+function createSaveValidationDialog(){
+    return new Promise((resolve)=>{
+
+        const modal = document.createElement('div');
+        modal.classList.add('modal-dlg');
+
+        const dlg = document.createElement('div');
+        dlg.classList.add('dlg');
+
+        const title = document.createElement('div');
+        title.classList.add('dlg-header');
+        title.innerText = appInfo.dialogTitle;
+
+        const main = document.createElement('div');
+        main.classList.add('dlg-main');
+        main.innerHTML = "<h1>Do you want to save the changes you made?</h1><p>Your changes will be lost if you don't save them.</p>";
+        
+        const buttons = document.createElement('div');
+        buttons.classList.add('dlg-buttons');
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.innerText = "Cancel";
+        cancelBtn.onclick = ()=>{
+            removeDlg();
+        }
+
+        const dontBtn = document.createElement('button');
+        dontBtn.innerText = "Dont' Save";
+        dontBtn.onclick = ()=>{
+            removeDlg();
+            resolve("Don't Save");
+        }
+
+        const saveBtn = document.createElement('button');
+        saveBtn.innerText = "Save";
+        saveBtn.onclick = ()=>{
+            removeDlg();
+            resolve("Save");
+        }
+
+        buttons.appendChild(cancelBtn);
+        buttons.appendChild(dontBtn);
+        buttons.appendChild(saveBtn);
+
+        dlg.appendChild(title);
+        dlg.appendChild(main);
+        dlg.appendChild(buttons);
+        modal.appendChild(dlg);
+        document.body.appendChild(modal);
+        
+    });
+}
+function createSavingDialog(){
+    return new Promise((resolve)=>{
+
+        const modal = document.createElement('div');
+        modal.classList.add('modal-dlg');
+
+        const dlg = document.createElement('div');
+        dlg.classList.add('dlg');
+
+        const title = document.createElement('div');
+        title.classList.add('dlg-header');
+        title.innerText = appInfo.dialogTitle;
+
+        const main = document.createElement('div');
+        main.classList.add('dlg-main');
+        main.innerHTML = "<h1>Where do you want to save your file to?</h1>";
+
+        
+
+        const buttons = document.createElement('div');
+        buttons.classList.add('dlg-buttons');
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.innerText = "Cancel";
+        cancelBtn.onclick = ()=>{
+            removeDlg();
+        }
+        
+        buttons.appendChild(cancelBtn);
+
+        dlg.appendChild(title);
+        dlg.appendChild(main);
+        dlg.appendChild(buttons);
+        modal.appendChild(dlg);
+        document.body.appendChild(modal);
+    });
+}
+
 // Give each tab the necassery events
-function giveTabEvents(tab, saveFunction){
+function giveTabEvents(tab, getDoc){
     $(tab).on('activate', function(){
 
         const activeTab = getActiveTab();
@@ -102,22 +215,40 @@ function giveTabEvents(tab, saveFunction){
         }
     });
     $(tab).on('close', function(){
-        
-        if(!saveFunction()){
-            return;
-        }
 
-        if(this.classList.contains('active')){
+        function closeThis(){
+
+            if(tab.classList.contains('active')){
             
-            T_ARR.pop();
-            if(T_ARR.length >= 1){
-                $("[tab-id='" + T_ARR[T_ARR.length - 1].id + "']").trigger('activate');
+                T_ARR.pop();
+                if(T_ARR.length >= 1){
+                    $("[tab-id='" + T_ARR[T_ARR.length - 1].id + "']").trigger('activate');
+                }
             }
+    
+            document.querySelector("[content-id='" + tab.getAttribute('tab-id') + "']").remove();
+            tab.remove();
+            condenseT_ARR();
+        }
+        
+        if(tab.getAttribute('status') == 'unsaved-changes'){
+            
+            // Display unsaved changes box
+            createSaveValidationDialog().then((promise)=>{
+                if(promise == "Save"){
+                    createSavingDialog().then((promise)=>{
+                        console.log(promise);
+                    });
+                }
+                else if(promise == "Don't Save"){
+                    closeThis();
+                }
+            });
+        }
+        else{
+            closeThis();
         }
 
-        document.querySelector("[content-id='" + this.getAttribute('tab-id') + "']").remove();
-        this.remove();
-        condenseT_ARR();
 
     });
 }
@@ -128,9 +259,10 @@ function createTab(args){
     // Have default values for the parameter
     const defaultArgs = {
         activate:true,
-        content:false, 
+        content:appInfo.defaultTabContent, 
         name:'untitled_doc',
-        saveFunction:()=>{return true;}
+        document:appInfo.defaultDocumentCollection,
+        saved:true
     };
     args = Object.assign({},defaultArgs, args);
 
@@ -149,14 +281,17 @@ function createTab(args){
     document.querySelector("[data-type='tab-content']").appendChild(tabContent);
 
     // Add the tab to the global T_ARR
-    T_ARR.push({id:tab.getAttribute('tab-id'), stateIndex:0, states:[$(tabContent.innerHTML).clone(true, true)]});
+    T_ARR.push({id:tab.getAttribute('tab-id'), stateIndex:0, states:[$(tabContent).clone(true, true)]});
 
     // Give events
-    giveTabEvents(tab, args.saveFunction);
+    giveTabEvents(tab, args.document);
 
     if(args.activate){
         // Active this tab
         $(tab).trigger('activate');
+    }
+    if(!args.saved){
+        changesToActiveTab();
     }
 
     return tab.getAttribute('tab-id');
@@ -201,7 +336,7 @@ function constructInitialTabs(){
         tabContent[i].style.display = "none";
 
         // Add the tab to the global T_ARR
-        T_ARR.push({id:tabs[i].getAttribute('tab-id'), stateIndex:0, states:[$(tabContent[i].innerHTML).clone(true, true)]});
+        T_ARR.push({id:tabs[i].getAttribute('tab-id'), stateIndex:0, states:[$(tabContent[i]).clone(true, true)]});
         
         giveTabEvents(tabs[i]);
 
@@ -223,30 +358,109 @@ function constructInitialTabs(){
 }
 
 // Undo and redo functions
-function doneAction(){
+function doneAction(unsavedChanges = true){
     for(var i = T_ARR[T_ARR.length - 1].states.length - 1; i > T_ARR[T_ARR.length - 1].stateIndex; i--){
         T_ARR[T_ARR.length - 1].states.pop();
     }
 
-    T_ARR[T_ARR.length - 1].states.push($(getActiveTabSection().innerHTML).clone(true, true));
+    T_ARR[T_ARR.length - 1].states.push($(getActiveTabSection()).clone(true, true));
     T_ARR[T_ARR.length - 1].stateIndex = T_ARR[T_ARR.length - 1].states.length - 1;
+
+    if(unsavedChanges){
+        changesToActiveTab();
+    }
 }
 function undo_action(){
+    
     if(T_ARR[T_ARR.length - 1].stateIndex > 0){
         T_ARR[T_ARR.length - 1].stateIndex--;
         getActiveTabSection().innerHTML = T_ARR[T_ARR.length - 1].states[T_ARR[T_ARR.length - 1].stateIndex][0].innerHTML;
     }
 }
 function redo_action(){
+
     if(T_ARR[T_ARR.length - 1].stateIndex < T_ARR[T_ARR.length - 1].states.length - 1){
         T_ARR[T_ARR.length - 1].stateIndex++;
         getActiveTabSection().innerHTML = T_ARR[T_ARR.length - 1].states[T_ARR[T_ARR.length - 1].stateIndex][0].innerHTML;
     }
 }
 
+// Event handling
+function giveEvent(el, eventType, foo){
+
+    let end = false;
+    let parent = el;
+    while(!end){
+        parent = parent.parentElement;
+        if(parent.classList.contains('tab-section')){
+            end = true;
+        }
+        else if(parent.tagName == 'BODY'){
+            return console.error("ERROR :: giveEvent :: Element given is not a child of a tab");
+        }
+    }
+
+    if(el.getAttribute('event-id') == null){
+        giveEventId(el);
+    }
+
+    $(parent).on(eventType, "[event-id='" + el.getAttribute('event-id') + "']", foo);
+}
+
+// Shortcuts
+function giveShortcuts(args){
+
+    // Have default values for the parameter
+    const defaultArgs = {
+        undo:[{ctrl:true, shft:false, key:'z'}],
+        redo:[{ctrl:true, shft:true, key:'z'}, {ctrl:true, shft:false, key:'y'}],
+        closeTab:[{ctrl:true, shft:false, key:'q'}],
+        newTab:[{ctrl:true, shft:false, key:'b'}]
+    };
+    args = Object.assign({},defaultArgs, args);
+
+    document.addEventListener('keydown', (event)=>{
+
+        for(var i = 0; i < args.undo.length; i++){
+            if(event.ctrlKey == args.undo[i].ctrl && event.shiftKey == args.undo[i].shft && event.key.toLowerCase() == args.undo[i].key){
+                event.preventDefault();
+                undo_action();
+                return;
+            }
+        }
+        for(var i = 0; i < args.redo.length; i++){
+            if(event.ctrlKey == args.redo[i].ctrl && event.shiftKey == args.redo[i].shft && event.key.toLowerCase() == args.redo[i].key){
+                event.preventDefault();
+                redo_action();
+                return;
+            }
+        }
+        for(var i = 0; i < args.closeTab.length; i++){
+            if(event.ctrlKey == args.closeTab[i].ctrl && event.shiftKey == args.closeTab[i].shft && event.key.toLowerCase() == args.closeTab[i].key){
+                event.preventDefault();
+                $(getActiveTab()).trigger('close');
+                return;
+            }
+        }
+        for(var i = 0; i < args.newTab.length; i++){
+            if(event.ctrlKey == args.newTab[i].ctrl && event.shiftKey == args.newTab[i].shft && event.key.toLowerCase() == args.newTab[i].key){
+                event.preventDefault();
+                createTab({saved:false});
+                return;
+            }
+        }
+    });
+}
+
+// App information
+let appInfo = {
+    dialogTitle:'Click to continue',
+    defaultTabContent:"",
+    defaultDocumentCollection:()=>{return getActiveTabSection().innerHTML;},
+    defaultFileType:"html"
+};
+function giveAppInfo(args){
+    appInfo = Object.assign({},appInfo, args);
+}
+
 constructInitialTabs();
-
-createTab({content:"<h1>First tab</h1>",name:'My First Tab'});
-createTab({name:'My Second Tab'});
-createTab({name:'My Third Tab'});
-
