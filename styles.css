@@ -65,11 +65,8 @@ html, body{
     margin-right:5px;
     opacity: 0.5;
     font-size:12px;
-    position:relative;
-    top:-1px;
 }
 .tabs div.tab-bar ul li div:hover{
-    display:inline-block;
     opacity: 1;
 }
 

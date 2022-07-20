@@ -1,7 +1,6 @@
 
-// Globals
+// Tab array
 var T_ARR = [];
-var tabNo=1;
 
 // This function finds the active tab and puts it on the end of the array
 function reposT_ARR(){
@@ -26,7 +25,6 @@ function reposT_ARR(){
 
     condenseT_ARR();
 }
-
 // This function finds all elements in the array with value null and removes them, keeping all the other elements in the right order
 function condenseT_ARR(){
 
@@ -49,6 +47,7 @@ function condenseT_ARR(){
 }
 
 // This function gives object passed into it a unique tab-id
+var tabNo=1;
 function setNewTabID(object){
     object.setAttribute('tab-id', tabNo);
     tabNo++;
@@ -66,37 +65,70 @@ function giveEventId(object){
     object.setAttribute('event-id', id);
 }
 
-// Returns the HTML of the active tag
-function getActiveTab(){
-    return document.querySelector("[data-type='tab-holder']").querySelector('.active');
-}
-function getActiveTabName(){
-    const text = getActiveTab().innerText;
-    return text.substring(0, text.length  - 1);
-}
-function getActiveTabSection(){
-    return getTabSection(getActiveTab().getAttribute('tab-id'));
+
+///// Getting the tabs /////
+
+// Returns the active tab id
+function getActiveTabId(){
+    return getActiveTab().getAttribute('tab-id');
 }
 
-// Returns the target tab/tab content
+// Returns the HTML of the active tab
+function getActiveTab(){
+    return getTab(getActiveTabId());
+}
+// Returns the filename of the active tab
+function getActiveTabName(){
+    return getTabName(getActiveTabId());
+}
+// Returns the entire section for the active tab
+function getActiveTabSection(){
+    return getTabSection(getActiveTabId());
+}
+// Returns the content for the active tab
+function getActiveTabContent(){
+    return getTabContent(getActiveTabId());
+}
+
+// Returns the HTML of the target tab
 function getTab(tabid){
     return document.querySelector("[tab-id='" + tabid + "']");
 }
+// Returns the filename of the target tab
+function getTabName(tabid){
+    const text = getTab(tabid).innerText;
+    return text.substring(0, text.length  - 1);
+}
+// Returns the entire section for the target tab
 function getTabSection(tabid){
     return document.querySelector("[content-id='" + tabid + "']");
 }
+// Returns the content for the target tab
 function getTabContent(tabid){
     return document.querySelector("[content-id='" + tabid + "']").innerHTML;
 }
 
-// Saving stuff
+
+///// Saving stuff /////
+
+// When changes have been made for the first time to the active tab, call this function. It is called by default in done_action()
 function changesToActiveTab(){
     getActiveTab().setAttribute('status', 'unsaved-changes');
 }
+// When changes have been made for the first time to the target tab, call this function. It is called by default in done_action()
 function changesToTab(tabid){
     getTab(tabid).setAttribute('status', 'unsaved-changes');
 }
+// Saves that the active tab has been saved
+function changesToActiveTab(){
+    getActiveTab().removeAttribute('status');
+}
+// Saves that the target tab has been saved
+function tabSaved(tabid){
+    getTab(tabid).removeAttribute('status');
+}
 
+// Downloads file in the user's browser
 function download(filename, filetype, data) {
     const blob = new Blob([data], {type: 'txt'});
     if(window.navigator.msSaveOrOpenBlob) {
@@ -112,9 +144,11 @@ function download(filename, filetype, data) {
     }
 }
 
+// Removes any dialog box that is on the screen
 function removeDlg(){
     document.querySelector('.modal-dlg').remove();
 }
+// Save validation dialog box
 function createSaveValidationDialog(){
     return new Promise((resolve)=>{
 
@@ -142,7 +176,7 @@ function createSaveValidationDialog(){
         }
 
         const dontBtn = document.createElement('button');
-        dontBtn.innerText = "Dont' Save";
+        dontBtn.innerText = "Don't Save";
         dontBtn.onclick = ()=>{
             removeDlg();
             resolve("Don't Save");
@@ -167,8 +201,9 @@ function createSaveValidationDialog(){
         
     });
 }
+// This dialog box handles the saving of the document
 function createSavingDialog(docCollection){
-    return new Promise(()=>{
+    return new Promise((resolve)=>{
 
         const modal = document.createElement('div');
         modal.classList.add('modal-dlg');
@@ -196,6 +231,7 @@ function createSavingDialog(docCollection){
         device.onclick = ()=>{
             download(getActiveTabName(), appInfo.defaultFileType, docCollection());
             removeDlg();
+            resolve('Saved');
         }
 
         saves.appendChild(device);
@@ -219,6 +255,7 @@ function createSavingDialog(docCollection){
     });
 }
 
+///// Tab construction - dynamically and statically /////
 // Give each tab the necassery events
 function giveTabEvents(tab, docCollection){
     $(tab).on('activate', function(){
@@ -269,7 +306,9 @@ function giveTabEvents(tab, docCollection){
             createSaveValidationDialog().then((promise)=>{
                 if(promise == "Save"){
                     createSavingDialog(docCollection).then((promise)=>{
-                        console.log(promise);
+                        if(promise == "Saved"){
+                            closeThis();
+                        }
                     });
                 }
                 else if(promise == "Don't Save"){
@@ -284,7 +323,6 @@ function giveTabEvents(tab, docCollection){
 
     });
 }
-
 // Creates a new tab
 function createTab(args){
 
@@ -328,7 +366,6 @@ function createTab(args){
 
     return tab.getAttribute('tab-id');
 }
-
 // Takes the initial set off tabs created in the .HTML file and adds the events and stuff
 function constructInitialTabs(){
 
@@ -389,7 +426,8 @@ function constructInitialTabs(){
     }
 }
 
-// Undo and redo functions
+///// Undo and redo functions /////
+// Call this function whenever an action has been done, so that it can be undone by the user
 function doneAction(unsavedChanges = true){
     for(var i = T_ARR[T_ARR.length - 1].states.length - 1; i > T_ARR[T_ARR.length - 1].stateIndex; i--){
         T_ARR[T_ARR.length - 1].states.pop();
@@ -402,6 +440,7 @@ function doneAction(unsavedChanges = true){
         changesToActiveTab();
     }
 }
+// This function undos an action
 function undo_action(){
     
     if(T_ARR[T_ARR.length - 1].stateIndex > 0){
@@ -409,6 +448,7 @@ function undo_action(){
         getActiveTabSection().innerHTML = T_ARR[T_ARR.length - 1].states[T_ARR[T_ARR.length - 1].stateIndex][0].innerHTML;
     }
 }
+// This function redos an action
 function redo_action(){
 
     if(T_ARR[T_ARR.length - 1].stateIndex < T_ARR[T_ARR.length - 1].states.length - 1){
@@ -417,7 +457,8 @@ function redo_action(){
     }
 }
 
-// Event handling
+///// Event handling /////
+// The user must call this function to give an event to an object that must keep the event when undoing and redoing actions
 function giveEvent(el, eventType, foo){
 
     let end = false;
@@ -439,7 +480,8 @@ function giveEvent(el, eventType, foo){
     $(parent).on(eventType, "[event-id='" + el.getAttribute('event-id') + "']", foo);
 }
 
-// Shortcuts
+///// Shortcuts /////
+// The user can call this function to initiate shortcuts for the functions available. There are default ones, or the user can create their own or remove them
 function giveShortcuts(args){
 
     // Have default values for the parameter
@@ -484,15 +526,19 @@ function giveShortcuts(args){
     });
 }
 
-// App information
+///// App information /////
+// Stores all the information about the app
 let appInfo = {
     dialogTitle:'Click to continue',
     defaultTabContent:"",
     defaultDocumentCollection:()=>{return getActiveTabSection().innerHTML;},
     defaultFileType:"html"
 };
+// The user can change any the default settings given
 function giveAppInfo(args){
     appInfo = Object.assign({},appInfo, args);
 }
 
+
+// This constructs initial tabs that are in the document, and have not been added using createTabs()
 constructInitialTabs();
